@@ -36,7 +36,7 @@ class Board
 
 end
 a = Board.new
-rook = SlidingPiece.new("white",a,[2,2],:rook)
+rook = SlidingPiece.new("white",a,[2,2],:queen)
 puts rook.type
 puts rook.color
 puts rook.board[[0,0]]

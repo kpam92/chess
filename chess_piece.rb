@@ -13,6 +13,7 @@ class Piece
   end
 
   def to_s
+    @type.to_s[0].upcase
   end
 
   def empty?
@@ -79,13 +80,9 @@ MOVES_HASH = {
       until off_board?([row_current,col_current]) ||same_color?(self,piece2)
         piece2 = @board[[row_current,col_current]]
         moves << [row_current,col_current]
-        puts "logic is #{same_color?(self,piece2) && piece2.type.nil?}"
-        puts "same_color? is #{same_color?(self,piece2)}"
-        puts "piece2.type.nil is #{piece2.type.nil?}"
         break unless same_color?(self,piece2) || piece2.type.nil?
         row_current += d_row
         col_current += d_col
-        puts "row_current #{row_current} col_current is #{col_current}"
 
       end
     end

@@ -1,3 +1,5 @@
+require_relative 'chess_piece'
+
 class Board
 
   def initialize
@@ -5,7 +7,7 @@ class Board
   end
 
   def make_starting_grid
-    @grid = Array.new(8) { Array.new(8)}
+    @grid = Array.new(8) { Array.new(8){Piece.new(nil,nil,nil,nil)}}
     #populate grid with chess pieces and such
   end
 
@@ -33,3 +35,9 @@ class Board
   end
 
 end
+a = Board.new
+rook = SlidingPiece.new("white",a,[2,2],:rook)
+puts rook.type
+puts rook.color
+puts rook.board[[0,0]]
+print rook.moves

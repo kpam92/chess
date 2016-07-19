@@ -2,15 +2,16 @@ require_relative 'chess_piece'
 
 class Board
   attr_reader :grid
+  attr_accessor :color_in_check
   def initialize
     make_starting_grid
     populate_board
-    # render
+    render
+    @color_in_check = :nil
   end
 
   def make_starting_grid
     @grid = Array.new(8) { Array.new(8){Piece.new(:nil,nil,nil,:nil)}}
-    #populate grid with chess pieces and such
   end
 
   def populate_board
@@ -50,10 +51,6 @@ class Board
 
 
   end
-
-  # def rotate
-  #   2.times {@grid = @grid.transpose.reverse}
-  # end
 
   def render
     puts
@@ -101,35 +98,34 @@ class Board
 
   def move_piece!(from_pos,to_pos)
     current_piece = self[from_pos]
-    puts "current_piece is #{current_piece} at #{current_piece.pos}"
     self[to_pos] = current_piece
     self[from_pos] = Piece.new(:nil,nil,nil,:nil)
     current_piece.pos = to_pos
   end
 
   def exposing_king?(color,from_pos,to_pos)
-    puts "rendering original board"
-    self.render
     board_copy = self.deep_dup
-    puts "rendering new board"
-    board_copy.render
     board_copy.move_piece!(from_pos,to_pos)
     king_pos = board_copy.find_king(color)
+    king = board_copy[king_pos]
     board_copy.grid.flatten.each do |el|
-      puts "element considered is a #{el.color}#{el}"
-      # byebug if el.type == :queen
-      unless el.color == color
-        possible_moves = el.moves
-        print board_copy[[6,4]] if el.type == :queen && el.color == :black
-        print possible_moves if el.type == :queen && el.color == :black
-
-        return true if possible_moves.include?(king_pos)
-      end
+      return true if can_king_be_killed?(king,el)
     end
     return false
   end
 
-  def check_mate?
+  def can_king_be_killed?(king,piece)
+    return true if piece.moves.include?(king.pos) && king.color != piece.color
+    false
+  end
+
+  def check?(color)
+    king_pos = find_king(color)
+    print king_pos
+    king = self[king_pos]
+    self.grid.flatten.any? do |el|
+      can_king_be_killed?(king,el)
+    end
   end
 
   def find_king(color)
@@ -141,6 +137,3 @@ class Board
   end
 
 end
-a = Board.new
-a.move_piece!([0,3],[2,4])
-print a.exposing_king?(:white,[6,4],[5,3])

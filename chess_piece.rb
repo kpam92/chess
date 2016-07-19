@@ -23,26 +23,6 @@ class Piece
   def symbol
   end
 
-  # def move_into_check?(to_pos)
-  #   working_piece = self.dup
-  #   working_piece.pos = to_pos
-  #   possible_moves = working_piece.moves
-  #   k_pos = @board.find_king(REVERSE_COLOR[self.color])
-  #   possible_moves.include?(k_pos)
-  # end
-  #
-  # def exposing_king?(to_pos)
-  #   original_pos = self.pos
-  #   dup_board = @board.deep_dup
-  #   current_piece = dup_board(original_pos)
-  #
-  #
-  # end
-
-  def valid_moves
-    # moves
-  end
-
   def same_color?(piece1,piece2)
     return false if piece1.nil? || piece2.nil?
     piece1.color == piece2.color
@@ -87,27 +67,6 @@ MOVES_HASH = {
   def initialize(color,pos,board,type)
     super
   end
-
-  # def moves
-  #   moves = []
-  #   MOVES_HASH[type].each do |direction|
-  #     row_current, col_current = self.pos[0], self.pos[1]
-  #     d_row, d_col = direction[0],direction[1]
-  #     row_current += d_row
-  #     col_current += d_col
-  #     # byebug
-  #     piece2 = @board[[row_current,col_current]]
-  #     until off_board?([row_current,col_current]) ||same_color?(self,piece2)
-  #       piece2 = @board[[row_current,col_current]]
-  #       moves << [row_current,col_current]
-  #       break unless same_color?(self,piece2) || piece2.type = :nil
-  #       row_current += d_row
-  #       col_current += d_col
-  #
-  #     end
-  #   end
-  #   moves
-  # end #end of moves method
 
   def moves
     moves = []

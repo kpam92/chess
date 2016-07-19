@@ -1,15 +1,15 @@
 require_relative 'chess_piece'
 
 class Board
-
+  attr_reader :grid
   def initialize
     make_starting_grid
     populate_board
-    render
+    # render
   end
 
   def make_starting_grid
-    @grid = Array.new(8) { Array.new(8){Piece.new(nil,nil,nil,:nil)}}
+    @grid = Array.new(8) { Array.new(8){Piece.new(:nil,nil,nil,:nil)}}
     #populate grid with chess pieces and such
   end
 
@@ -56,7 +56,8 @@ class Board
   # end
 
   def render
-    system('clear')
+    puts
+    # system('clear')
     @grid.each do |row|
       row.each do |el|
         print "[#{el.to_s}] "
@@ -71,9 +72,10 @@ class Board
 
   def [](pos)
     begin
-      @grid[pos[0]][pos[1]]
+      piece = @grid[pos[0]][pos[1]]
+      piece ||= Piece.new(:nil,nil,nil,:nil)
     rescue
-      return nil
+      return Piece.new(:nil,nil,nil,:nil)
     end
   end
 
@@ -99,9 +101,32 @@ class Board
 
   def move_piece!(from_pos,to_pos)
     current_piece = self[from_pos]
+    puts "current_piece is #{current_piece} at #{current_piece.pos}"
     self[to_pos] = current_piece
-    self[from_pos] = Piece.new(nil,nil,nil,:nil)
+    self[from_pos] = Piece.new(:nil,nil,nil,:nil)
     current_piece.pos = to_pos
+  end
+
+  def exposing_king?(color,from_pos,to_pos)
+    puts "rendering original board"
+    self.render
+    board_copy = self.deep_dup
+    puts "rendering new board"
+    board_copy.render
+    board_copy.move_piece!(from_pos,to_pos)
+    king_pos = board_copy.find_king(color)
+    board_copy.grid.flatten.each do |el|
+      puts "element considered is a #{el.color}#{el}"
+      # byebug if el.type == :queen
+      unless el.color == color
+        possible_moves = el.moves
+        print board_copy[[6,4]] if el.type == :queen && el.color == :black
+        print possible_moves if el.type == :queen && el.color == :black
+
+        return true if possible_moves.include?(king_pos)
+      end
+    end
+    return false
   end
 
   def check_mate?
@@ -117,16 +142,5 @@ class Board
 
 end
 a = Board.new
-# a.move_piece(:white,[6,4],[4,4])
-# a.render
-# sleep(2)
-a.move_piece!([0,4],[3,4])
-print a[[7,6]].move_into_check?([5,5])
-b = a.deep_dup
-b.render
-gets
-b.move_piece!([1,0],[2,0])
-b.render
-gets
-a.render
-# a.render
+a.move_piece!([0,3],[2,4])
+print a.exposing_king?(:white,[6,4],[5,3])

@@ -1,9 +1,8 @@
 require 'byebug'
 # require_relative 'board'
 require 'singleton'
-
+REVERSE_COLOR = {:white => :black, :black => :white}
 class Piece
-  REVERSE_COLOR = {:white => :black, :black => :white}
   attr_reader :color, :board, :type
   attr_accessor :pos
 
@@ -24,25 +23,38 @@ class Piece
   def symbol
   end
 
-  def move_into_check?(to_pos)
-    working_piece = self.dup
-    working_piece.pos = to_pos
-    possible_moves = working_piece.moves
-    k_pos = @board.find_king(REVERSE_COLOR[self.color])
-    possible_moves.include?(k_pos)
-  end
+  # def move_into_check?(to_pos)
+  #   working_piece = self.dup
+  #   working_piece.pos = to_pos
+  #   possible_moves = working_piece.moves
+  #   k_pos = @board.find_king(REVERSE_COLOR[self.color])
+  #   possible_moves.include?(k_pos)
+  # end
+  #
+  # def exposing_king?(to_pos)
+  #   original_pos = self.pos
+  #   dup_board = @board.deep_dup
+  #   current_piece = dup_board(original_pos)
+  #
+  #
+  # end
 
   def valid_moves
     # moves
   end
 
   def same_color?(piece1,piece2)
+    return false if piece1.nil? || piece2.nil?
     piece1.color == piece2.color
   end
 
   def off_board?(pos)
     row,col = pos[0],pos[1]
     !(row.between?(0,7) && col.between?(0,7))
+  end
+
+  def moves
+    []
   end
 
 end #end of Piece class
@@ -70,7 +82,7 @@ MOVES_HASH = {
     :bishop => BISHOP_MOVES,
     :rook => ROOK_MOVES,
     :queen => QUEEN_MOVES
-  }
+}
 
   def initialize(color,pos,board,type)
     super
@@ -88,7 +100,7 @@ MOVES_HASH = {
       until off_board?([row_current,col_current]) ||same_color?(self,piece2)
         piece2 = @board[[row_current,col_current]]
         moves << [row_current,col_current]
-        break unless same_color?(self,piece2) || piece2.type.nil?
+        break unless same_color?(self,piece2) || piece2.type != :nil
         row_current += d_row
         col_current += d_col
 
@@ -120,7 +132,6 @@ KING_MOVES = [
   [-1, -1],
   [1, -1]
 ]
-
 MOVES_HASH = {
   :knight => KNIGHT_MOVES,
   :king => KING_MOVES

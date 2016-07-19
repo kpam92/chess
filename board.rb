@@ -93,7 +93,7 @@ class Board
     current_piece = self[from_pos]
     possible_moves = current_piece.moves
     if current_piece.color == color &&
-      possible_moves.include?(to_pos) && !exposing_king(color,from_pos,to_pos)
+      possible_moves.include?(to_pos) && !exposing_king?(color,from_pos,to_pos)
       move_piece!(from_pos,to_pos)
       return true
     end
@@ -164,13 +164,3 @@ class Board
   end
 
 end
-a = Board.new
-# b = SlidingPiece.new(:black,[0,0],self,:rook)
-# c = b.dup(new_board)
-a.move_piece!([7,4],[2,7])
-a.move_piece!([0,3],[2,6])
-# a.grid.flatten.each do |x|
-#   puts x.board.object_id
-# end
-
-puts a.check_mate?(:white)

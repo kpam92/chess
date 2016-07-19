@@ -1,6 +1,23 @@
 require 'byebug'
 # require_relative 'board'
 require 'singleton'
+
+UNI_SYMBOL = {
+  :whiteking => "\u2654",
+   :whitequeen => "\u2655",
+   :whiterook => "\u2656",
+   :whitebishop => "\u2657",
+   :whiteknight => "\u2658",
+   :whitepawn => "\u2659",
+   :blackking => "\u265A",
+    :blackqueen => "\u265B",
+    :blackrook => "\u265C",
+    :blackbishop => "\u265D",
+    :blackknight => "\u265E",
+    :blackpawn => "\u265F",
+    :nilnil => "\u0020",
+    :blacknil => "\u0020"
+}
 REVERSE_COLOR = {:white => :black, :black => :white}
 class Piece
   attr_reader :color, :board, :type
@@ -21,11 +38,9 @@ class Piece
   end
 
   def to_s
-    letter = @type.to_s[0].upcase
-    if @type == :nil
-      letter = " "
-    end
-    output = " #{letter} "
+    icon_symbol = UNI_SYMBOL[(color.to_s + type.to_s).to_sym]
+    icon_symbol.encode('utf-8')
+    output = " #{icon_symbol} "
   end
 
   def empty?

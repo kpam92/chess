@@ -145,11 +145,7 @@ class Board
         current_board = self.deep_dup
         current_board.move_piece!(current_pos,move)
         check_mate_boolean = check_mate_boolean && current_board.check?(color)
-        puts "current piece is #{piece.to_s}"
-        print "piece is moving from #{current_pos} to #{move}"
-        puts
-        puts "current board is in check? #{current_board.check?(color)}"
-        # byebug
+      # byebug
       end
     end
     check_mate_boolean

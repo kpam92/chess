@@ -3,7 +3,7 @@ require 'byebug'
 require 'singleton'
 
 class Piece
-
+  REVERSE_COLOR = {:white => :black, :black => :white}
   attr_reader :color, :board, :type
   attr_accessor :pos
 
@@ -25,6 +25,11 @@ class Piece
   end
 
   def move_into_check?(to_pos)
+    working_piece = self.dup
+    working_piece.pos = to_pos
+    possible_moves = working_piece.moves
+    k_pos = @board.find_king(REVERSE_COLOR[self.color])
+    possible_moves.include?(k_pos)
   end
 
   def valid_moves

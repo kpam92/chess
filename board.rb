@@ -77,7 +77,14 @@ class Board
     end
   end
 
-  def dup
+  def deep_dup
+    board_copy = Board.new
+    for row in 0..7 do
+      for col in 0..7 do
+        board_copy[[row,col]] = self[[row,col]].dup
+      end
+    end
+    board_copy
   end
 
   def move_piece(color,from_pos,to_pos)
@@ -101,6 +108,11 @@ class Board
   end
 
   def find_king(color)
+    k_pos = nil
+    @grid.flatten.each do |x|
+      k_pos = x.pos if x.type == :king && x.color == color
+    end
+    k_pos
   end
 
 end
@@ -108,5 +120,13 @@ a = Board.new
 # a.move_piece(:white,[6,4],[4,4])
 # a.render
 # sleep(2)
-a.move_piece(:white,[7,3],[4,4])
+a.move_piece!([0,4],[3,4])
+print a[[7,6]].move_into_check?([5,5])
+b = a.deep_dup
+b.render
+gets
+b.move_piece!([1,0],[2,0])
+b.render
+gets
 a.render
+# a.render

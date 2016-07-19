@@ -22,14 +22,14 @@ class Board
     self[[0,5]] = SlidingPiece.new(:black,[0,5],self,:bishop)
     self[[0,6]] = SteppingPiece.new(:black,[0,6],self,:knight)
     self[[0,7]] = SlidingPiece.new(:black,[0,7],self,:rook)
-    self[[1,0]] = SteppingPiece.new(:black,[1,0],self,:pawn)
-    self[[1,1]] = SteppingPiece.new(:black,[1,1],self,:pawn)
-    self[[1,2]] = SteppingPiece.new(:black,[1,2],self,:pawn)
-    self[[1,3]] = SteppingPiece.new(:black,[1,3],self,:pawn)
-    self[[1,4]] = SteppingPiece.new(:black,[1,4],self,:pawn)
-    self[[1,5]] = SteppingPiece.new(:black,[1,5],self,:pawn)
-    self[[1,6]] = SteppingPiece.new(:black,[1,6],self,:pawn)
-    self[[1,7]] = SteppingPiece.new(:black,[1,7],self,:pawn)
+    self[[1,0]] = Pawn.new(:black,[1,0],self,:pawn)
+    self[[1,1]] = Pawn.new(:black,[1,1],self,:pawn)
+    self[[1,2]] = Pawn.new(:black,[1,2],self,:pawn)
+    self[[1,3]] = Pawn.new(:black,[1,3],self,:pawn)
+    self[[1,4]] = Pawn.new(:black,[1,4],self,:pawn)
+    self[[1,5]] = Pawn.new(:black,[1,5],self,:pawn)
+    self[[1,6]] = Pawn.new(:black,[1,6],self,:pawn)
+    self[[1,7]] = Pawn.new(:black,[1,7],self,:pawn)
 
     self[[7,0]] = SlidingPiece.new(:white,[7,0],self,:rook)
     self[[7,1]] = SteppingPiece.new(:white,[7,1],self,:knight)
@@ -39,14 +39,14 @@ class Board
     self[[7,5]] = SlidingPiece.new(:white,[7,5],self,:bishop)
     self[[7,6]] = SteppingPiece.new(:white,[7,6],self,:knight)
     self[[7,7]] = SlidingPiece.new(:white,[7,7],self,:rook)
-    self[[6,0]] = SteppingPiece.new(:white,[6,0],self,:pawn)
-    self[[6,1]] = SteppingPiece.new(:white,[6,1],self,:pawn)
-    self[[6,2]] = SteppingPiece.new(:white,[6,2],self,:pawn)
-    self[[6,3]] = SteppingPiece.new(:white,[6,3],self,:pawn)
-    self[[6,4]] = SteppingPiece.new(:white,[6,4],self,:pawn)
-    self[[6,5]] = SteppingPiece.new(:white,[6,5],self,:pawn)
-    self[[6,6]] = SteppingPiece.new(:white,[6,6],self,:pawn)
-    self[[6,7]] = SteppingPiece.new(:white,[6,7],self,:pawn)
+    self[[6,0]] = Pawn.new(:white,[6,0],self,:pawn)
+    self[[6,1]] = Pawn.new(:white,[6,1],self,:pawn)
+    self[[6,2]] = Pawn.new(:white,[6,2],self,:pawn)
+    self[[6,3]] = Pawn.new(:white,[6,3],self,:pawn)
+    self[[6,4]] = Pawn.new(:white,[6,4],self,:pawn)
+    self[[6,5]] = Pawn.new(:white,[6,5],self,:pawn)
+    self[[6,6]] = Pawn.new(:white,[6,6],self,:pawn)
+    self[[6,7]] = Pawn.new(:white,[6,7],self,:pawn)
 
 
   end
@@ -70,16 +70,31 @@ class Board
   end
 
   def [](pos)
-    @grid[pos[0]][pos[1]]
+    begin
+      @grid[pos[0]][pos[1]]
+    rescue
+      return nil
+    end
   end
 
   def dup
   end
 
   def move_piece(color,from_pos,to_pos)
+
+    current_piece = self[from_pos]
+    possible_moves = current_piece.moves
+    if current_piece.color == color && possible_moves.include?(to_pos)
+      move_piece!(from_pos,to_pos)
+    end
+
   end
 
   def move_piece!(from_pos,to_pos)
+    current_piece = self[from_pos]
+    self[to_pos] = current_piece
+    self[from_pos] = Piece.new(nil,nil,nil,:nil)
+    current_piece.pos = to_pos
   end
 
   def check_mate?
@@ -90,5 +105,8 @@ class Board
 
 end
 a = Board.new
-
-a.populate_board
+# a.move_piece(:white,[6,4],[4,4])
+# a.render
+# sleep(2)
+a.move_piece(:white,[7,3],[4,4])
+a.render

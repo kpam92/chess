@@ -88,26 +88,52 @@ MOVES_HASH = {
     super
   end
 
+  # def moves
+  #   moves = []
+  #   MOVES_HASH[type].each do |direction|
+  #     row_current, col_current = self.pos[0], self.pos[1]
+  #     d_row, d_col = direction[0],direction[1]
+  #     row_current += d_row
+  #     col_current += d_col
+  #     # byebug
+  #     piece2 = @board[[row_current,col_current]]
+  #     until off_board?([row_current,col_current]) ||same_color?(self,piece2)
+  #       piece2 = @board[[row_current,col_current]]
+  #       moves << [row_current,col_current]
+  #       break unless same_color?(self,piece2) || piece2.type = :nil
+  #       row_current += d_row
+  #       col_current += d_col
+  #
+  #     end
+  #   end
+  #   moves
+  # end #end of moves method
+
   def moves
     moves = []
     MOVES_HASH[type].each do |direction|
-      row_current, col_current = self.pos[0], self.pos[1]
-      d_row, d_col = direction[0],direction[1]
-      row_current += d_row
-      col_current += d_col
-      # byebug
-      piece2 = @board[[row_current,col_current]]
-      until off_board?([row_current,col_current]) ||same_color?(self,piece2)
-        piece2 = @board[[row_current,col_current]]
-        moves << [row_current,col_current]
-        break unless same_color?(self,piece2) || piece2.type != :nil
-        row_current += d_row
-        col_current += d_col
+     row_current, col_current = self.pos[0], self.pos[1]
+     d_row, d_col = direction[0], direction[1]
+     keep_going = true
+     while keep_going
+       row_current += d_row
+       col_current += d_col
+       piece_current = @board[[row_current,col_current]]
+       unless off_board?([row_current,col_current])
+         if piece_current.type == :nil || !same_color?(self, piece_current)
+           moves <<[row_current,col_current]
+         else
+           keep_going = false
+         end
 
-      end
-    end
-    moves
-  end #end of moves method
+       else
+         keep_going = false
+       end
+     end
+   end
+   moves
+ end # end of moves
+
 end # end of SlidingPiece class
 
 class SteppingPiece < Piece

@@ -6,8 +6,7 @@ class Board
   def initialize
     make_starting_grid
     populate_board
-    render
-    @color_in_check = :nil
+    # render
   end
 
   def make_starting_grid
@@ -32,35 +31,36 @@ class Board
     self[[1,6]] = Pawn.new(:black,[1,6],self,:pawn)
     self[[1,7]] = Pawn.new(:black,[1,7],self,:pawn)
 
-    self[[7,0]] = SlidingPiece.new(:white,[7,0],self,:rook)
-    self[[7,1]] = SteppingPiece.new(:white,[7,1],self,:knight)
-    self[[7,2]] = SlidingPiece.new(:white,[7,2],self,:bishop)
-    self[[7,3]] = SlidingPiece.new(:white,[7,3],self,:queen)
+    # self[[7,0]] = SlidingPiece.new(:white,[7,0],self,:rook)
+    # self[[7,1]] = SteppingPiece.new(:white,[7,1],self,:knight)
+    # self[[7,2]] = SlidingPiece.new(:white,[7,2],self,:bishop)
+    # self[[7,3]] = SlidingPiece.new(:white,[7,3],self,:queen)
     self[[7,4]] = SteppingPiece.new(:white,[7,4],self,:king)
-    self[[7,5]] = SlidingPiece.new(:white,[7,5],self,:bishop)
-    self[[7,6]] = SteppingPiece.new(:white,[7,6],self,:knight)
-    self[[7,7]] = SlidingPiece.new(:white,[7,7],self,:rook)
-    self[[6,0]] = Pawn.new(:white,[6,0],self,:pawn)
-    self[[6,1]] = Pawn.new(:white,[6,1],self,:pawn)
-    self[[6,2]] = Pawn.new(:white,[6,2],self,:pawn)
-    self[[6,3]] = Pawn.new(:white,[6,3],self,:pawn)
-    self[[6,4]] = Pawn.new(:white,[6,4],self,:pawn)
-    self[[6,5]] = Pawn.new(:white,[6,5],self,:pawn)
-    self[[6,6]] = Pawn.new(:white,[6,6],self,:pawn)
-    self[[6,7]] = Pawn.new(:white,[6,7],self,:pawn)
+    # self[[7,5]] = SlidingPiece.new(:white,[7,5],self,:bishop)
+    # self[[7,6]] = SteppingPiece.new(:white,[7,6],self,:knight)
+    # self[[7,7]] = SlidingPiece.new(:white,[7,7],self,:rook)
+    # self[[6,0]] = Pawn.new(:white,[6,0],self,:pawn)
+    # self[[6,1]] = Pawn.new(:white,[6,1],self,:pawn)
+    # self[[6,2]] = Pawn.new(:white,[6,2],self,:pawn)
+    # self[[6,3]] = Pawn.new(:white,[6,3],self,:pawn)
+    # self[[6,4]] = Pawn.new(:white,[6,4],self,:pawn)
+    # self[[6,5]] = Pawn.new(:white,[6,5],self,:pawn)
+    # self[[6,6]] = Pawn.new(:white,[6,6],self,:pawn)
+    # self[[6,7]] = Pawn.new(:white,[6,7],self,:pawn)
 
 
   end
 
   def render
+
     puts
-    # system('clear')
     @grid.each do |row|
       row.each do |el|
         print "[#{el.to_s}] "
       end
       puts
     end
+    nil
   end
 
   def []=(pos,piece)
@@ -80,7 +80,9 @@ class Board
     board_copy = Board.new
     for row in 0..7 do
       for col in 0..7 do
-        board_copy[[row,col]] = self[[row,col]].dup
+        cp = self[[row,col]]
+        np = cp.dup(board_copy)
+        board_copy[[row,col]] = np
       end
     end
     board_copy
@@ -121,11 +123,34 @@ class Board
 
   def check?(color)
     king_pos = find_king(color)
-    print king_pos
     king = self[king_pos]
     self.grid.flatten.any? do |el|
       can_king_be_killed?(king,el)
     end
+  end
+
+  def check_mate?(color)
+    pieces = []
+    @grid.flatten.each do |el|
+      if el.color == color
+        pieces << el
+      end
+    end
+    check_mate_boolean = true
+    pieces.each do |piece|
+      current_pos = piece.pos
+      piece.moves.each do |move|
+        current_board = self.deep_dup
+        current_board.move_piece!(current_pos,move)
+        check_mate_boolean = check_mate_boolean && current_board.check?(color)
+        puts "current piece is #{piece.to_s}"
+        print "piece is moving from #{current_pos} to #{move}"
+        puts
+        puts "current board is in check? #{current_board.check?(color)}"
+        # byebug
+      end
+    end
+    check_mate_boolean
   end
 
   def find_king(color)
@@ -137,3 +162,13 @@ class Board
   end
 
 end
+a = Board.new
+# b = SlidingPiece.new(:black,[0,0],self,:rook)
+# c = b.dup(new_board)
+a.move_piece!([7,4],[2,7])
+a.move_piece!([0,3],[2,6])
+# a.grid.flatten.each do |x|
+#   puts x.board.object_id
+# end
+
+puts a.check_mate?(:white)

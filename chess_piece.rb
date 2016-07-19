@@ -13,6 +13,13 @@ class Piece
     @type = type
   end
 
+  def dup(board)
+    if self.type == :nil
+      return Piece.new(:nil,nil,board,:nil)
+    end
+    self.class.new(self.color,self.pos.dup,board,self.type)
+  end
+
   def to_s
     @type.to_s[0].upcase
   end
@@ -67,6 +74,10 @@ MOVES_HASH = {
   def initialize(color,pos,board,type)
     super
   end
+
+  # def dup(board)
+  #   super
+  # end
 
   def moves
     moves = []
@@ -156,7 +167,7 @@ class Pawn < Piece
       moves << [row_current, col_current]
     end
 
-    if @pos[0] == STARTING_ROW[@color]
+    if @pos[0] == STARTING_ROW[@color] && moves.length == 1
       row_current, col_current = @pos[0] + 2*forward[0], @pos[1] + 2*forward[1]
       if @board[[row_current,col_current]].type == :nil
         moves << [row_current, col_current]
@@ -175,12 +186,12 @@ class Pawn < Piece
     right_attack =[forward_row, @pos[1]+1]
     piece2 = @board[left_attack]
     # byebug
-    unless same_color?(self,piece2) || piece2.type == :nil
+    if piece2.type != :nil && !same_color?(self,piece2)
       output << left_attack
     end
     piece2 = @board[right_attack]
     # byebug
-    unless same_color?(self,piece2) || piece2.type == :nil
+    if piece2.type != :nil && !same_color?(self,piece2)
       output << right_attack
     end
     output

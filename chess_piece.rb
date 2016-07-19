@@ -21,7 +21,11 @@ class Piece
   end
 
   def to_s
-    @type.to_s[0].upcase
+    letter = @type.to_s[0].upcase
+    if @type == :nil
+      letter = " "
+    end
+    output = " #{letter} "
   end
 
   def empty?

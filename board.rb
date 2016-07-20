@@ -10,7 +10,7 @@ class Board
   end
 
   def make_starting_grid
-    @grid = Array.new(8) { Array.new(8){Piece.new(:nil,nil,nil,:nil)}}
+    @grid = Array.new(8) { Array.new(8){NilPiece.instance}}
   end
 
 
@@ -72,9 +72,9 @@ class Board
   def [](pos)
     begin
       piece = @grid[pos[0]][pos[1]]
-      piece ||= Piece.new(:nil,nil,nil,:nil)
+      piece ||= NilPiece.instance
     rescue
-      return Piece.new(:nil,nil,nil,:nil)
+      return NilPiece.instance
     end
   end
 
@@ -105,7 +105,7 @@ class Board
   def move_piece!(from_pos,to_pos)
     current_piece = self[from_pos]
     self[to_pos] = current_piece
-    self[from_pos] = Piece.new(:nil,nil,nil,:nil)
+    self[from_pos] = NilPiece.instance
     current_piece.pos = to_pos
   end
 

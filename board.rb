@@ -1,5 +1,7 @@
-require_relative 'chess_piece'
-
+require_relative 'pawn'
+require_relative 'steppingpiece'
+require_relative 'slidingpiece'
+require_relative 'nilpiece'
 class Board
   attr_reader :grid
 

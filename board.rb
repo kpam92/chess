@@ -2,18 +2,65 @@ require_relative 'chess_piece'
 
 class Board
   attr_reader :grid
-  attr_accessor :color_in_check
+
+  def move_piece(color,from_pos,to_pos)
+
+    current_piece = self[from_pos]
+    possible_moves = current_piece.moves
+    if current_piece.color == color &&
+      possible_moves.include?(to_pos) && !exposing_king?(color,from_pos,to_pos)
+      move_piece!(from_pos,to_pos)
+      return true
+    end
+    false
+  end
+
+  def in_bounds?(pos)
+    pos[0].between?(0,7) && pos[1].between?(0,7)
+  end
+
+  def []=(pos,piece)
+    @grid[pos[0]][pos[1]] = piece
+  end
+
+  def [](pos)
+    begin
+      piece = @grid[pos[0]][pos[1]]
+      piece ||= NilPiece.instance
+    rescue
+      return NilPiece.instance
+    end
+  end
+protected
+
+def deep_dup
+  board_copy = Board.new
+  for row in 0..7 do
+    for col in 0..7 do
+      cp = self[[row,col]]
+      np = cp.dup(board_copy)
+      board_copy[[row,col]] = np
+    end
+  end
+  board_copy
+end
+
+def move_piece!(from_pos,to_pos)
+  current_piece = self[from_pos]
+  self[to_pos] = current_piece
+  self[from_pos] = NilPiece.instance
+  current_piece.pos = to_pos
+end
+
+
   def initialize
     make_starting_grid
     populate_board
-    # render
   end
 
   def make_starting_grid
     @grid = Array.new(8) { Array.new(8){NilPiece.instance}}
   end
-
-
 
   def populate_board
     self[[0,0]] = SlidingPiece.new(:black,[0,0],self,:rook)
@@ -65,49 +112,6 @@ class Board
     nil
   end
 
-  def []=(pos,piece)
-    @grid[pos[0]][pos[1]] = piece
-  end
-
-  def [](pos)
-    begin
-      piece = @grid[pos[0]][pos[1]]
-      piece ||= NilPiece.instance
-    rescue
-      return NilPiece.instance
-    end
-  end
-
-  def deep_dup
-    board_copy = Board.new
-    for row in 0..7 do
-      for col in 0..7 do
-        cp = self[[row,col]]
-        np = cp.dup(board_copy)
-        board_copy[[row,col]] = np
-      end
-    end
-    board_copy
-  end
-
-  def move_piece(color,from_pos,to_pos)
-
-    current_piece = self[from_pos]
-    possible_moves = current_piece.moves
-    if current_piece.color == color &&
-      possible_moves.include?(to_pos) && !exposing_king?(color,from_pos,to_pos)
-      move_piece!(from_pos,to_pos)
-      return true
-    end
-    false
-  end
-
-  def move_piece!(from_pos,to_pos)
-    current_piece = self[from_pos]
-    self[to_pos] = current_piece
-    self[from_pos] = NilPiece.instance
-    current_piece.pos = to_pos
-  end
 
   def exposing_king?(color,from_pos,to_pos)
     board_copy = self.deep_dup
@@ -153,8 +157,6 @@ class Board
     k_pos
   end
 
-  def in_bounds?(pos)
-    pos[0].between?(0,7) && pos[1].between?(0,7)
-  end
+
 
 end

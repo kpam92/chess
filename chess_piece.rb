@@ -2,23 +2,7 @@ require 'byebug'
 # require_relative 'board'
 require 'singleton'
 
-UNI_SYMBOL = {
-  :whiteking => "\u2654",
-   :whitequeen => "\u2655",
-   :whiterook => "\u2656",
-   :whitebishop => "\u2657",
-   :whiteknight => "\u2658",
-   :whitepawn => "\u2659",
-   :blackking => "\u265A",
-    :blackqueen => "\u265B",
-    :blackrook => "\u265C",
-    :blackbishop => "\u265D",
-    :blackknight => "\u265E",
-    :blackpawn => "\u265F",
-    :nilnil => "\u0020",
-    :blacknil => "\u0020"
-}
-REVERSE_COLOR = {:white => :black, :black => :white}
+
 class Piece
   attr_reader :color, :board, :type
   attr_accessor :pos
@@ -43,12 +27,26 @@ class Piece
     output = " #{icon_symbol} "
   end
 
-  def empty?
-  end
+  protected
 
-  def symbol
-  end
-
+  UNI_SYMBOL = {
+    :whiteking => "\u2654",
+     :whitequeen => "\u2655",
+     :whiterook => "\u2656",
+     :whitebishop => "\u2657",
+     :whiteknight => "\u2658",
+     :whitepawn => "\u2659",
+     :blackking => "\u265A",
+      :blackqueen => "\u265B",
+      :blackrook => "\u265C",
+      :blackbishop => "\u265D",
+      :blackknight => "\u265E",
+      :blackpawn => "\u265F",
+      :nilnil => "\u0020",
+      :blacknil => "\u0020"
+  }
+  REVERSE_COLOR = {:white => :black, :black => :white}
+  
   def same_color?(piece1,piece2)
     return false if piece1.nil? || piece2.nil?
     piece1.color == piece2.color
@@ -57,10 +55,6 @@ class Piece
   def off_board?(pos)
     row,col = pos[0],pos[1]
     !(row.between?(0,7) && col.between?(0,7))
-  end
-
-  def moves
-    []
   end
 
 end #end of Piece class

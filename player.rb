@@ -9,21 +9,24 @@ end
 
 def get_from_pos
   @display = Display.new(@board)
-  result = nil
-  until result
+  from_pos = nil
+  until from_pos
     @display.render
-    result = @display.get_input
+    from_pos= @display.get_input
   end
-  result
+  @from_pos = from_pos
+  from_pos
 end
 
 def get_to_pos
-  @display = Display.new(@board)
-  result = nil
-  until result
+  from_piece = @board[@from_pos]
+  @display = Display.new(@board,@from_pos,from_piece)
+  to_pos = nil
+  until to_pos
     @display.render
-    result = @display.get_input
+    to_pos = @display.get_input
   end
-  result
+  @from_pos = nil
+  to_pos
 end
 end

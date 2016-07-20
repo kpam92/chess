@@ -20,7 +20,6 @@ attr_reader :player1, :player2
   def play
     stop = false
     until stop
-      @board.render
       take_turn(@current_player)
       switch_player
     end
